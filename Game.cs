@@ -1,18 +1,18 @@
-﻿namespace HelloWorld
+﻿using System;
+namespace HelloWorld
 {
-using System;
 
 
 
 
-    struct player
-    {
-        public string name;
-        public int health;
-        public int damage;
-    }
+
+
+
+
+
 
     struct item
+
     {
         public int statBoost;
 
@@ -20,17 +20,18 @@ using System;
     }
     class Game
     {
+
         bool _gameOver = false;
-        player _player1;
-        player _player2;
-        item Longsword;
-        item dagger;
+        Player _player1;
+        Player _player2;
+       private item Longsword;
+       private item dagger;
         //Run the game
         public void Run()
         {
             Start();
 
-            while(_gameOver == false)
+            while (_gameOver == false)
             {
                 Update();
             }
@@ -40,57 +41,51 @@ using System;
         //Performed once when the game begins
         public void Start()
         {
-            InitializePlayers();
             Initializeitems();
 
         }
-        
-        public void InitializePlayers()
-        {
-            _player1.health = 100;
-            _player1.damage = 5;
 
-            _player1.health = 100;
-            _player2.damage = 5;
 
-        }
+
+    
+
         void Initializeitems()
         {
             Longsword.statBoost = 15;
             dagger.statBoost = 10;
         }
-    public void GetInput(out char input, string option1, string option2, string query)
-    {
-        Console.WriteLine(query);
-        Console.WriteLine("1." + option1);
-        Console.WriteLine("2." + option2);
-        Console.Write("> ");
-        input = ' ';
-        while(input != '1' && input != '2')
+        public void GetInput(out char input, string option1, string option2, string query)
         {
-            input = Console.ReadKey().KeyChar;
-            if(input != '1' && input != '2')
+            Console.WriteLine(query);
+            Console.WriteLine("1." + option1);
+            Console.WriteLine("2." + option2);
+            Console.Write("> ");
+            input = ' ';
+            while (input != '1' && input != '2')
             {
-                Console.WriteLine("Invalid input");
+                input = Console.ReadKey().KeyChar;
+                if (input != '1' && input != '2')
+                {
+                    Console.WriteLine("Invalid input");
+                }
+
+
+
             }
-             
-
-
         }
-    }
 
         public void StartBattle()
         {
-            
+
             Console.WriteLine("Now GO!");
 
-            while (_player1.health > 0 && _player2.health > 0)
+            while (_player1.GetIsAlive() && _player2.GetIsAlive())
             {
                 //print player stats to console
                 Console.WriteLine("Player1");
-                PrintStats(_player1);
+                _player.PrintStats();
                 Console.WriteLine("Player2");
-                PrintStats(_player2);
+                _player.PrintStats();
                 //Player 1 turn start
                 //Get player input
                 char input;
@@ -98,8 +93,7 @@ using System;
 
                 if (input == '1')
                 {
-                    _player2.health -= _player1.damage;
-                    Console.WriteLine("Player 2 took " + _player1.damage + " damage!");
+                    _player1.Attack(_player2);
                 }
                 else
                 {
@@ -110,8 +104,7 @@ using System;
 
                 if (input == '1')
                 {
-                    _player1.health -= _player2.damage;
-                    Console.WriteLine("Player 1 took " + _player2.damage + " damage!");
+                    _player2.Attack(_player1);
                 }
                 else
                 {
@@ -119,7 +112,7 @@ using System;
                 }
                 Console.Clear();
             }
-            if (_player1.health > 0)
+            if (_player1.GetIsAlive())
             {
                 Console.WriteLine("Player 1 wins!!1!1!!11!11?");
             }
@@ -129,44 +122,49 @@ using System;
             }
             _gameOver = true;
         }
-        public void EquipItems()
-    {   //get input from player1
-        Console.WriteLine("Welcome! Player one please chopose a weapon.");
-        Console.WriteLine("1.Longsword");
-        Console.WriteLine("2.Dagger");
-        
-        char input;
-        GetInput(out  input, "Longsword", "Dagger", "Welcome player one please choose a weapon");
-        //get input for player 2
-            if(input == '1')
-        {
-            _player1.damage += Longsword.statBoost;
+        public void SelectItems ()
+        {   //get input from player1
+            Console.WriteLine("Welcome! Player one please chopose a weapon.");
+            Console.WriteLine("1.Longsword");
+            Console.WriteLine("2.Dagger");
+
+            char input;
+            GetInput(out input, "Longsword", "Dagger", "Welcome player one please choose a weapon");
+            //get input for player 2
+            if (input == '1')
+            {
+                _player1.EquipItem("Longsword");
+            }
+            else if (input == '2')
+            {
+                _player2.EquipItem("Dagger");
+            }
+            Console.WriteLine("Player 1");
+            _player1.PrintStats();
         }
-            else if(input == '2')
-        {
-            _player2.damage += dagger.statBoost;
-        }Console.WriteLine("Player 1");
-            PrintStats(_player1);
-    }   
-       
-                
+
+
         //prints palyer stats to console
-        public void PrintStats(player player)
+        public void CreateCharacter(ref Player player)
         {
-            Console.WriteLine("Health:" + player.health);
-            Console.WriteLine("Damage:" + player.damage);
+            Console.WriteLine("what is your name");
+            string name = new Player(name, 100, 10);
+            SelectItems(player);
+
+
         }
         //Repeated until the game ends
         public void Update()
         {
-            EquipItems();
+            _player1 = CreateCharacter();
+
             StartBattle();
         }
 
         //Performed once when the game ends
         public void End()
         {
-            
+
         }
     }
 }
