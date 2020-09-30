@@ -27,6 +27,10 @@ namespace HelloWorld
             _damage = damageVal;
             _inventory = new item[inventorySize];
         }
+        public void AddItemToInventory(item item, int index)
+        {
+            _inventory[index] = item;
+        }
 
         public void EquipItem(int itemIndex)
         {
